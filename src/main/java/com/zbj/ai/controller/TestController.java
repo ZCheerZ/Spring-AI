@@ -10,12 +10,12 @@ import reactor.core.publisher.Flux;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/ai")
 public class TestController {
 
     private final ChatClient chatClient;
 
-    @RequestMapping(value = "/stream", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/chat", produces = "text/html;charset=UTF-8")
     public Flux<String> chat(String prompt) {
         // 使用 chatClient 进行聊天
         Flux<String> content = chatClient.prompt().user(prompt).stream().content();
