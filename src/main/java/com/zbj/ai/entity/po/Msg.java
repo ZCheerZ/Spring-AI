@@ -25,7 +25,7 @@ public class Msg {
     public Message toMessage() {
         return switch (messageType) {
             case SYSTEM -> new SystemMessage(text);
-//            case USER -> new UserMessage(text, List.of(), metadata);
+            case USER -> UserMessage.builder().text(text).metadata(metadata).media(List.of()).build();
             case ASSISTANT -> new AssistantMessage(text, metadata, List.of(), List.of());
             default -> throw new IllegalArgumentException("Unsupported message type: " + messageType);
         };
