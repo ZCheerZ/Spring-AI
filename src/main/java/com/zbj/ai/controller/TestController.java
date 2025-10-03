@@ -36,7 +36,7 @@ public class TestController {
 
     @RequestMapping(value = "/call")
     public String hello(String prompt) {
-        // 使用 chatClient 进行聊天
+        // 去config内修改bean使用chatClient是ollma模型进行聊天还是openai调用的api模型进行
         String content = chatClient.prompt().user(prompt).call().content();
         return content;
     }

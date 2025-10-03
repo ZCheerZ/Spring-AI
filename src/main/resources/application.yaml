@@ -13,7 +13,7 @@ spring:
       api-key: sk-xarkkupkbvvkzzkvcxjthdlelexdntevjledhhaebtbrzvts
       chat:
         options:
-          model: Qwen/Qwen3-235B-A22B-Instruct-2507 # 要钱
+          model: Qwen/Qwen3-8B #Qwen/Qwen3-235B-A22B-Instruct-2507 # 要钱
 
 logging:
   level:

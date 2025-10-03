@@ -25,9 +25,19 @@ public class ChatClientConfiguration {
     @Autowired
     private ChatMemory chatMemory;
 
+//    @Bean
+//    public ChatClient chatClient(OllamaChatModel ollamaChatModel,ChatMemory chatMemory) {
+//        return ChatClient.builder(ollamaChatModel)
+//                .defaultSystem("你是小左，一个AI助手，擅长回答各种问题。")
+//                .defaultAdvisors(
+//                        new SimpleLoggerAdvisor(),
+//                        MessageChatMemoryAdvisor.builder(chatMemory).build()
+//                ).build();
+//    }
+
     @Bean
-    public ChatClient chatClient(OllamaChatModel ollamaChatModel,ChatMemory chatMemory) {
-        return ChatClient.builder(ollamaChatModel)
+    public ChatClient chatClient(OpenAiChatModel openAiChatModel,ChatMemory chatMemory) {
+        return ChatClient.builder(openAiChatModel)
                 .defaultSystem("你是小左，一个AI助手，擅长回答各种问题。")
                 .defaultAdvisors(
                         new SimpleLoggerAdvisor(),
