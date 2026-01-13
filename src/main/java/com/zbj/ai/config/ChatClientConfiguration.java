@@ -1,6 +1,7 @@
 package com.zbj.ai.config;
 
 import com.zbj.ai.constants.SystemConstants;
+import com.zbj.ai.tools.CourseTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -53,5 +54,16 @@ public class ChatClientConfiguration {
                         new SimpleLoggerAdvisor(),
                         MessageChatMemoryAdvisor.builder(chatMemory).build()
                 ).build();
+    }
+
+    @Bean
+    public ChatClient serviceChatClient(OpenAiChatModel openAiChatModel, ChatMemory chatMemory, CourseTools courseTools) {
+        return ChatClient.builder(openAiChatModel)
+                .defaultSystem(SystemConstants.SERVICE_SYSTEM_PROMPT)
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),
+                        MessageChatMemoryAdvisor.builder(chatMemory).build())
+                .defaultTools(courseTools)
+                .build();
     }
 }
