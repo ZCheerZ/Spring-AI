@@ -5,14 +5,22 @@ import com.zbj.ai.tools.CourseTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 //import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.openai.OpenAiEmbeddingModel;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.SimpleVectorStore;
+
 
 
 @Configuration
@@ -39,6 +47,8 @@ public class ChatClientConfiguration {
     @Bean
     public ChatClient chatClient(OpenAiChatModel openAiChatModel,ChatMemory chatMemory) {
         return ChatClient.builder(openAiChatModel)
+                // 多模态模型！直接切换即可
+                .defaultOptions(ChatOptions.builder().model("qwen3-omni-flash").build())
                 .defaultSystem("你是小左，一个AI助手，擅长回答各种问题。")
                 .defaultAdvisors(
                         new SimpleLoggerAdvisor(),
@@ -64,6 +74,29 @@ public class ChatClientConfiguration {
                         new SimpleLoggerAdvisor(),
                         MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .defaultTools(courseTools)
+                .build();
+    }
+
+    @Bean
+    public VectorStore  vectorstore(OpenAiEmbeddingModel openAiEmbeddingModel) {
+        return SimpleVectorStore.builder(openAiEmbeddingModel).build();
+    }
+
+    @Bean
+    public ChatClient pdfChatClient(OpenAiChatModel model, ChatMemory chatMemory, VectorStore vectorStore) {
+        return ChatClient
+                .builder(model)
+                .defaultSystem("请根据上下文回答问题，遇到上下文没有的问题，不要随意编造。")
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder()
+                                .similarityThreshold(0.3)
+                                .topK(2)
+                                .build())
+                                .build()
+                )
                 .build();
     }
 }

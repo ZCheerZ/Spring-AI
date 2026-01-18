@@ -14,7 +14,10 @@ spring:
       chat:
         options:
           model: qwen3-max #Qwen/Qwen3-235B-A22B-Instruct-2507 # 要钱
-
+      embedding:
+        options:
+          model: text-embedding-v4  # 向量维度
+          dimensions: 1024 # qwen3-emb-4096
 logging:
   level:
     org.springframework.ai: debug
